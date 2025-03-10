@@ -6,6 +6,8 @@ from card import Card
 from image_generator import create_image
 import random
 
+from pokemon import Pokemon
+
 # Load environment variables
 load_dotenv()
 discord_token = os.getenv('DISCORD_TOKEN')
@@ -20,20 +22,21 @@ client = discord.Client(intents=intents)
 async def on_ready():
     print(f'We have logged in as {client.user}')
 
-# List of possible colors and titles for randomness
-colors = ['red', 'green', 'blue', 'yellow', 'purple', 'orange']
-titles = ['Tiago', 'Onur', 'Jose', 'Mondim', 'Pere']
 
 @client.event
 async def on_message(message):
     if message.author == client.user:
         return
     
-    if message.content == '!create_image':
-        cards = [Card(random.choice(titles), random.choice(colors)) for _ in range(3)]
+    if message.content == '!drop':
+        cards = [Card(Pokemon(), 'white') for _ in range(3)]
         image = create_image(cards)
-        await message.channel.send(file=discord.File(fp=image, filename='image.png'))
+        await message.channel.send(f"{message.author.mention} Here are your drops:", file=discord.File(fp=image, filename='image.png'))
 
+        for card in cards:
+            if card.pokemon.is_shiny:
+                await message.channel.send("Shiny Pokemon found!")
+                break
 
 # Log Handler
 log_handler = logging.StreamHandler()
