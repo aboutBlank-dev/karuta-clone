@@ -2,6 +2,8 @@ import os
 from dotenv import load_dotenv
 import discord
 import logging
+from card import Card
+from image_generator import create_image
 import random
 
 # Load environment variables
@@ -18,14 +20,19 @@ client = discord.Client(intents=intents)
 async def on_ready():
     print(f'We have logged in as {client.user}')
 
+# List of possible colors and titles for randomness
+colors = ['red', 'green', 'blue', 'yellow', 'purple', 'orange']
+titles = ['Tiago', 'Onur', 'Jose', 'Mondim', 'Pere']
+
 @client.event
 async def on_message(message):
     if message.author == client.user:
         return
-
-    #Log the message
-    print(f'{message.author} said: {message.content}')
-
+    
+    if message.content == '!create_image':
+        cards = [Card(random.choice(titles), random.choice(colors)) for _ in range(3)]
+        image = create_image(cards)
+        await message.channel.send(file=discord.File(fp=image, filename='image.png'))
 
 
 # Log Handler
