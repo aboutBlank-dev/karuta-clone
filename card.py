@@ -8,7 +8,6 @@ class Card:
     def __init__(self, pokemon: Pokemon):
         self.pokemon = pokemon
 
-
     def draw(self, draw: ImageDraw.ImageDraw, img: Image, position: tuple[int,int]):
         """Draws the card on the provided ImageDraw object at the given position."""
         self._draw_background(draw, img, position)
@@ -26,6 +25,8 @@ class Card:
         self._draw_sprite(draw, img, position)
         self._draw_text(draw, img, position)
         self._draw_frame(draw, img, position)
+
+        return img
 
     def _draw_background(self, draw, img, position):
         draw.rectangle([position, (position[0] + self.CARD_WIDTH, position[1] + self.CARD_HEIGHT)], fill="white")
@@ -57,8 +58,7 @@ class Card:
 
         # Get the centered position for the text
         text_x = position[0] + self.CARD_WIDTH // 2
-        image_height = img.size[1]
-        text_y = image_height - 83 # Slightly above the bottom of the card
+        text_y = self.CARD_HEIGHT - 35
 
         # Get the bounding box of the text to properly center it
         pokemon_name = self.pokemon.get_formatted_name()
