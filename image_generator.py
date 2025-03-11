@@ -1,23 +1,30 @@
 from PIL import Image, ImageDraw
 import io
-from card import Card
-from pokemon import Pokemon  # Import the Card class
+from abstract_card_view import AbstractCardView
+from pokemon_card_view import PokemonCardView
+from pokemon import Pokemon
+from pokemon_tcg_card import PokemonTCGCard
+from pokemon_tcg_card_view import PokemonTCGCardView  # Import the Card class
 
-def create_drop_image(cards: list[Card], spacing: int = 10, padding: int = 20) -> io.BytesIO:
+def create_drop_image(cards: list[AbstractCardView], spacing: int = 20, padding: int = 20) -> io.BytesIO:
     # Calculate combined width and height including spacing and padding
-    combined_width = (Card.CARD_WIDTH * len(cards)) + (spacing * (len(cards) - 1)) + (2 * padding)
-    combined_height = Card.CARD_HEIGHT + (2 * padding)
+    # We generate first card ahead of time since we need to update the width/height (which we get from the loaded image)
+    first_card = cards[0]
+    first_card_image = first_card.create_image()
+
+    combined_width = (first_card.CARD_WIDTH * len(cards)) + (spacing * (len(cards) - 1)) + (2 * padding)
+    combined_height = first_card.CARD_HEIGHT + (2 * padding)
 
     # Create a new image with the specified width and height
     combined_image = Image.new("RGBA", (combined_width, combined_height), (0, 0, 0, 0))  # Transparent background
 
     # Place the cards on the combined image with spacing
     for i, card in enumerate(cards):
-        card_image = card.create_image()  # This function creates an image for each card (implement it based on your logic)
+        card_image = first_card_image if (i == 0) else card.create_image()  
         alpha_channel = card_image.split()[3]  # Get the alpha channel (the 4th channel)
 
         # Calculate the position considering padding and spacing between cards
-        x_position = padding + i * (Card.CARD_WIDTH + spacing)
+        x_position = padding + i * (card.CARD_WIDTH + spacing)
         y_position = padding
 
         # Paste the card image onto the combined image with its alpha channel as a mask
@@ -32,7 +39,8 @@ def create_drop_image(cards: list[Card], spacing: int = 10, padding: int = 20) -
 
 def main():
     # Create a list of Card objects
-    cards = [Card(Pokemon()) for _ in range(3)]
+    cards = [PokemonCardView(Pokemon()) for _ in range(3)]
+    cards = [PokemonTCGCardView(PokemonTCGCard()) for _ in range(3)]
 
     # Generate the drop image
     image = create_drop_image(cards)

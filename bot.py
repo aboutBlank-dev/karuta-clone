@@ -2,11 +2,13 @@ import os
 from dotenv import load_dotenv
 import discord
 import logging
-from card import Card
+from pokemon_card_view import PokemonCardView
 from image_generator import create_drop_image
 from discord.ext import commands
 
 from pokemon import Pokemon
+from pokemon_tcg_card import PokemonTCGCard
+from pokemon_tcg_card_view import PokemonTCGCardView
 from views.card_drop_view import CardDropView
 
 # Load environment variables
@@ -31,11 +33,10 @@ async def on_message(message):
         return
     
     if message.content == '!drop':
-        cards = [Card(Pokemon()) for _ in range(3)]
+        # cards = [PokemonCardView(Pokemon()) for _ in range(3)]
+        cards = [PokemonTCGCardView(PokemonTCGCard()) for _ in range(3)]
         drop = CardDropView(cards, message.author, message.channel)
         await drop.start()
-
-        
 
 # Log Handler
 log_handler = logging.StreamHandler()

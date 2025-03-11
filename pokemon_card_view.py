@@ -1,7 +1,8 @@
 from PIL import ImageDraw, Image, ImageFont
+from abstract_card_view import AbstractCardView
 from pokemon import Pokemon
 
-class Card:
+class PokemonCardView(AbstractCardView):
     CARD_WIDTH = 300
     CARD_HEIGHT = 400
 
@@ -10,6 +11,9 @@ class Card:
 
     def __init__(self, pokemon: Pokemon):
         self.pokemon = pokemon
+
+    def get_display_name(self):
+        return self.pokemon.get_formatted_name()
 
     def draw(self, draw: ImageDraw.ImageDraw, img: Image, position: tuple[int,int]):
         """Draws the card on the provided ImageDraw object at the given position."""

@@ -125,5 +125,4 @@ def load_pokemon_data(pokemon_id):
         if file_name.endswith('.png'):
             name_without_extension = os.path.splitext(file_name)[0]
             pokemon_data["images"][name_without_extension] = Image.open(os.path.join(pokemon_folder, file_name)).convert('RGBA')
-
     return pokemon_data
