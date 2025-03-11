@@ -9,7 +9,7 @@ def create_drop_image(cards: list[Card]) -> io.BytesIO:
     img = Image.new('RGBA', (width, height), (0, 0, 0, 0))  # Transparent background
     draw = ImageDraw.Draw(img)
 
-    ## calculate the card positions based on the number of cards
+    # Calculate the card positions based on the number of cards
     card_positions = [(50 + i * 170, 50) for i in range(len(cards))]
 
     # Draw each card by calling its draw method
@@ -25,7 +25,7 @@ def create_drop_image(cards: list[Card]) -> io.BytesIO:
 
 def main():
     # Create a list of Card objects
-    cards = [Card(Pokemon(), 'white') for _ in range(3)]
+    cards = [Card(Pokemon()) for _ in range(3)]
 
     # Generate the drop image
     image = create_drop_image(cards)

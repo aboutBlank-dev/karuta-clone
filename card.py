@@ -17,8 +17,19 @@ class Card:
 
         # Draw the frame last to ensure it's on top of the other elements
         self._draw_frame(draw, img, position)
-        
     
+    def create_image(self):
+        img = Image.new('RGBA', (self.CARD_WIDTH, self.CARD_HEIGHT), (0, 0, 0, 0))  # Transparent background
+        draw = ImageDraw.Draw(img)
+
+        position = (0, 0)
+        self._draw_background(draw, img, position)
+        self._draw_sprite(draw, img, position)
+        self._draw_text(draw, img, position)
+        self._draw_frame(draw, img, position)
+
+        img.show()
+
     def _draw_background(self, draw, img, position):
         draw.rectangle([position, (position[0] + self.CARD_WIDTH, position[1] + self.CARD_HEIGHT)], outline='black', width=2, fill="white")
     
@@ -34,6 +45,7 @@ class Card:
         
         # Paste the sprite onto the card
         img.paste(sprite_img, (sprite_x, sprite_y), sprite_img)
+    
     
     def _draw_frame(self, draw, img, position):
         frame_img = Image.open("card_frame.png")
