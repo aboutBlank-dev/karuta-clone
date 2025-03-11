@@ -20,7 +20,9 @@ def download_sprites(sprites, pokemon_id):
     os.makedirs(pokemon_folder, exist_ok=True)
 
     for sprite_key, sprite_url in sprites.items():
-        if sprite_url:  # Only download if the URL is not None
+        if isinstance(sprite_url, dict):
+            download_sprites(sprite_url, pokemon_id)
+        elif sprite_url:  # Only download if the URL is not None
             try:
                 # Download the sprite image
                 response = requests.get(sprite_url)
@@ -32,19 +34,19 @@ def download_sprites(sprites, pokemon_id):
                     img = Image.open(BytesIO(response.content))
                     img.save(os.path.join(pokemon_folder, sprite_name))
                 except Exception as e:
-                    print(f"Error saving {sprite_key} for Pokémon ID {pokemon_id}: {e}")
+                    print(f"Error saving {sprite_key} for Pokémon ID {pokemon_id} Sprite Url: {sprite_url} Error: {e}")
 
             except requests.exceptions.RequestException as e:
                 print(f"Error downloading {sprite_key} for Pokémon ID {pokemon_id}: {e}")
 
 
-def fetch_pokemon_data(pokemon_name):
+def fetch_pokemon_data(pokemon_name, force=False):
     print(f"Fetching data for {pokemon_name}...")
     pokemon_info = requests.get(f"https://pokeapi.co/api/v2/pokemon/{pokemon_name}").json()
     pokemon_id = pokemon_info['id']
 
     pokemon_folder = os.path.join(data_dir, str(pokemon_id))
-    if os.path.exists(pokemon_folder):
+    if os.path.exists(pokemon_folder) and not force:
         print(f"Skipping Pokémon ID {pokemon_id} ({pokemon_name}) as it already exists.")
         return
     
@@ -62,7 +64,7 @@ def fetch_pokemon_data(pokemon_name):
     
     return pokemon_info
 
-def fetch_all_pokemon_data():
+def fetch_all_pokemon_data(force=False):
     pokemon_data = []
     base_url = "https://pokeapi.co/api/v2/pokemon"
     
@@ -95,15 +97,16 @@ def fetch_all_pokemon_data():
 def main():
     parser = argparse.ArgumentParser(description="Download Pokémon sprites.")
     parser.add_argument("pokemon", type=str, help="Pokemon ID or 'all' to fetch all Pokémon.")
+    parser.add_argument("--force", action="store_true", help="Force the download of the Pokémon data.")
     
     args = parser.parse_args()
 
     if args.pokemon == "all":
-        fetch_all_pokemon_data()  # Fetch and process all Pokémon
+        fetch_all_pokemon_data(args.force)  # Fetch and process all Pokémon
     else:
         try:
             pokemon_id = int(args.pokemon)
-            fetch_pokemon_data(pokemon_id)
+            fetch_pokemon_data(pokemon_id, args.force)
         except ValueError:
             print("[ERROR] Invalid Pokémon ID. Please provide a valid number or 'all'.")
 

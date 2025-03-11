@@ -21,7 +21,7 @@ class Card:
         
     
     def _draw_background(self, draw, img, position):
-        ##Draw the background
+        #Draw the background
         draw.rectangle([position, (position[0] + self.CARD_WIDTH, position[1] + self.CARD_HEIGHT)], outline='black', width=2, fill=self.color)
     
     def _draw_sprite(self, draw, img, position):

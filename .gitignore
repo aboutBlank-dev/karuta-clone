@@ -3,3 +3,4 @@ env/
 __pycache__/
 
 pokemon_data/
+missing_keys.txt
