@@ -5,8 +5,6 @@ import json
 from PIL import Image
 from io import BytesIO
 
-#TODO: ADD SUPPORT FOR POKEMONS WHOSE ID DOES NOT FOLLOW THE PATTERN (MEGA EVOLUTIONS, ETC)
-
 # Create directories for storing data
 data_dir = 'pokemon_data'
 

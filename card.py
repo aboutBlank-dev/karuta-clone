@@ -5,8 +5,7 @@ class Card:
     CARD_WIDTH = 150
     CARD_HEIGHT = 200
 
-    def __init__(self, pokemon: Pokemon, color: str):
-        self.color = color
+    def __init__(self, pokemon: Pokemon):
         self.pokemon = pokemon
 
 
@@ -21,8 +20,7 @@ class Card:
         
     
     def _draw_background(self, draw, img, position):
-        #Draw the background
-        draw.rectangle([position, (position[0] + self.CARD_WIDTH, position[1] + self.CARD_HEIGHT)], outline='black', width=2, fill=self.color)
+        draw.rectangle([position, (position[0] + self.CARD_WIDTH, position[1] + self.CARD_HEIGHT)], outline='black', width=2, fill="white")
     
     def _draw_sprite(self, draw, img, position):
         sprite_img = self.pokemon.get_sprite()
