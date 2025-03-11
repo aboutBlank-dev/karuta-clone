@@ -1,6 +1,49 @@
-env/
-.env
-__pycache__/
-
 pokemon_data/
 missing_keys.txt
+
+
+# Python bytecode files
+*.pyc
+*.pyo
+__pycache__/
+
+# Virtual environment directory (if using virtualenv or venv)
+env/
+venv/
+ENV/
+.venv/
+
+# Alembic migration files (if you want to ignore migration scripts)
+versions/
+
+# Python environment files
+.env
+.envrc
+*.env
+
+# IDE/editor-specific files
+.vscode/
+.idea/
+*.sublime-workspace
+*.sublime-project
+
+# PyCharm project files
+*.iml
+.idea/
+
+# Log files
+*.log
+
+# Database files (if any SQLite database exists)
+*.db
+*.sqlite3
+
+# .DS_Store (for macOS users)
+.DS_Store
+
+# Backup files
+*~ 
+
+# Sensitive configuration (credentials, secrets)
+secrets/
+config.json
