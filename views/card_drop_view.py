@@ -44,7 +44,7 @@ class CardDropView(discord.ui.View):
         claimed_card: Card = self.cards[card_index]
         
         # Send response to the user
-        await interaction.response.send_message(f"{interaction.user.mention} claimed **{claimed_card.pokemon.get_formatted_name()}** from Drop `{self.drop_id}`!", ephemeral=True)
+        await interaction.response.send_message(f"{interaction.user.mention} claimed **{claimed_card.pokemon.get_formatted_name()}** from Drop `{self.drop_id}`!")
         
         # Edit message to remove buttons after claiming
         await self.discord_drop_message.edit(view=None)
