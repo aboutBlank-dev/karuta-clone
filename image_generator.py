@@ -24,15 +24,19 @@ def create_drop_image(cards: list[Card]) -> io.BytesIO:
     return byte_io
 
 def main():
-    # Create a list of Card objects
-    cards = [Card(Pokemon()) for _ in range(3)]
+    # # Create a list of Card objects
+    # cards = [Card(Pokemon()) for _ in range(3)]
 
-    # Generate the drop image
-    image = create_drop_image(cards)
+    # # Generate the drop image
+    # image = create_drop_image(cards)
 
-    # Save the image to a file
-    with open('drop_image.png', 'wb') as f:
-        f.write(image.getvalue())
+    # # Save the image to a file
+    # with open('drop_image.png', 'wb') as f:
+    #     f.write(image.getvalue())
+
+    card = Card(Pokemon())
+    card.create_image()
+
 
 if __name__ == '__main__':
     main()
