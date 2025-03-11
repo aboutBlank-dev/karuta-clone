@@ -2,8 +2,11 @@ from PIL import ImageDraw, Image, ImageFont
 from pokemon import Pokemon
 
 class Card:
-    CARD_WIDTH = 150
-    CARD_HEIGHT = 200
+    CARD_WIDTH = 300
+    CARD_HEIGHT = 400
+
+    SPRITE_WIDTH = 200
+    SPRITE_HEIGHT = 200
 
     def __init__(self, pokemon: Pokemon):
         self.pokemon = pokemon
@@ -34,7 +37,7 @@ class Card:
     def _draw_sprite(self, draw, img, position):
         sprite_img = self.pokemon.get_sprite()
         # Resize the sprite image to fit within the card
-        sprite_img = sprite_img.resize((128, 128))  # You can adjust the size as needed
+        sprite_img = sprite_img.resize((self.SPRITE_WIDTH, self.SPRITE_HEIGHT))  # You can adjust the size as needed
         
         # Calculate position to center the sprite image on the card
         sprite_x = position[0] + (self.CARD_WIDTH - sprite_img.width) // 2
@@ -53,12 +56,12 @@ class Card:
     def _draw_text(self, draw, img, position):
         # Load the default font
         font_path = "minecraft-font.ttf"  # Adjust based on your system
-        font_size = 15  # You can change this value to control the font size
+        font_size = 30  # You can change this value to control the font size
         font = ImageFont.truetype(font_path, font_size)
 
         # Get the centered position for the text
         text_x = position[0] + self.CARD_WIDTH // 2
-        text_y = self.CARD_HEIGHT - 35
+        text_y = self.CARD_HEIGHT - 70
 
         # Get the bounding box of the text to properly center it
         pokemon_name = self.pokemon.get_formatted_name()
