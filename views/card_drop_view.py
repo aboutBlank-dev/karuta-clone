@@ -7,7 +7,7 @@ from views.card_drop_button_view import CardDropButtonView
 
 class CardDropView(discord.ui.View):
     def __init__(self, drop_event: CardDropEvent):
-        super().__init__(timeout=drop_event.DURATION_SECONDS)
+        super().__init__(timeout=CardDropEvent.DURATION_SECONDS)
         self.drop_event = drop_event
         self.discord_channel = drop_event.discord_channel
 
@@ -27,6 +27,24 @@ class CardDropView(discord.ui.View):
     async def on_timeout(self):
         card_drop_manager = CardDropManager()
         card_drop_manager.on_event_timed_out(self.drop_event.id)
+
+        file_name = f"drop_{self.drop_event.id}.png"
+        expired_embed = discord.Embed(title="🎴 Drop has expired !", color=discord.Color.light_grey())
+        expired_embed.set_image(url=f"attachment://{file_name}")
+
+        all_cards = self.drop_event.all_cards
+        claimed_cards = self.drop_event.claimed_cards
+
+        formatted_text = ""
+        for i, card in enumerate(all_cards):
+            if claimed_cards[i] is not None:
+                formatted_text += f"✅ {card.name} was caught!\n"  # Checkmark for caught cards
+            else:
+                formatted_text += f"❌ {card.name} was lost forever!\n"  # Cross for lost cards
+
+        expired_embed.set_footer(text=formatted_text)
+
+        await self.discord_drop_message.edit(embed=expired_embed, view=None)
         return await super().on_timeout()
 
 
