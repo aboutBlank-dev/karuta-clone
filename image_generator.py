@@ -3,7 +3,7 @@ import io
 from card import Card
 from pokemon import Pokemon  # Import the Card class
 
-def create_image(cards: list[Card]) -> io.BytesIO:
+def create_drop_image(cards: list[Card]) -> io.BytesIO:
     """Generates an image with the given list of Card objects."""
     width, height = 600, 300
     img = Image.new('RGBA', (width, height), (0, 0, 0, 0))  # Transparent background
@@ -22,3 +22,18 @@ def create_image(cards: list[Card]) -> io.BytesIO:
     byte_io.seek(0)
 
     return byte_io
+
+def main():
+    # Create a list of Card objects
+    cards = [Card(Pokemon(), 'white') for _ in range(3)]
+
+    # Generate the drop image
+    image = create_drop_image(cards)
+
+    # Save the image to a file
+    with open('drop_image.png', 'wb') as f:
+        f.write(image.getvalue())
+
+if __name__ == '__main__':
+    main()
+

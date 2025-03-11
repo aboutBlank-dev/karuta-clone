@@ -3,7 +3,7 @@ from dotenv import load_dotenv
 import discord
 import logging
 from card import Card
-from image_generator import create_image
+from image_generator import create_drop_image
 import random
 
 from pokemon import Pokemon
@@ -30,7 +30,7 @@ async def on_message(message):
     
     if message.content == '!drop':
         cards = [Card(Pokemon(), 'white') for _ in range(3)]
-        image = create_image(cards)
+        image = create_drop_image(cards)
         await message.channel.send(f"{message.author.mention} Here are your drops:", file=discord.File(fp=image, filename='image.png'))
 
         for card in cards:
