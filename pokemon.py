@@ -1,8 +1,4 @@
-from io import BytesIO
 import random
-import pokebase as pb
-import requests
-from PIL import Image
 
 from pokemon_saver import load_pokemon_data
 
@@ -21,7 +17,15 @@ class Pokemon:
         return self.pokemon.name
 
     def get_sprite(self):
-        if self.is_shiny:
-            return self.pokemon["images"]["front_shiny"]
-        else:
-            return self.pokemon["images"]["front_default"]
+        try:
+            if self.is_shiny:
+                return self.pokemon["images"]["front_shiny"]
+            else:
+                return self.pokemon["images"]["front_default"]
+        except KeyError:
+            # Write into a file the key that is missing
+            # Create a file if it does not exist
+            with open("missing_keys.txt", "a") as f:
+                f.write(f"{self.pokemon['name']} - {self.is_shiny}\n")
+
+            return None
