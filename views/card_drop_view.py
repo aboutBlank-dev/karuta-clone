@@ -1,5 +1,6 @@
 import discord
-from card import Card
+from abstract_card_view import AbstractCardView
+from pokemon_card_view import PokemonCardView
 from image_generator import create_drop_image
 from pokemon import Pokemon
 import uuid
@@ -7,7 +8,7 @@ import uuid
 from views.card_drop_button_view import CardDropButtonView
 
 class CardDropView(discord.ui.View):
-    def __init__(self, cards: list[Card], discord_user, discord_channel):
+    def __init__(self, cards: list[AbstractCardView], discord_user, discord_channel):
         super().__init__(timeout=None)
 
         self.drop_id = str(uuid.uuid4())
@@ -41,10 +42,10 @@ class CardDropView(discord.ui.View):
         # Mark drop as claimed
         self.claimed = True
 
-        claimed_card: Card = self.cards[card_index]
+        claimed_card: AbstractCardView = self.cards[card_index]
         
         # Send response to the user
-        await interaction.response.send_message(f"{interaction.user.mention} claimed **{claimed_card.pokemon.get_formatted_name()}** from Drop `{self.drop_id}`!")
+        await interaction.response.send_message(f"{interaction.user.mention} claimed **{claimed_card.get_display_name()}** from Drop `{self.drop_id}`!")
         
         # Edit message to remove buttons after claiming
         await self.discord_drop_message.edit(view=None)
