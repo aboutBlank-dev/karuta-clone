@@ -3,7 +3,7 @@ import io
 from abstract_card_view import AbstractCardView
 from pokemon_card_view import PokemonCardView
 from pokemon import Pokemon
-from pokemon_tcg_card import PokemonTCGCard
+from pokemon_tcg_card import PokemonTCGCard, PokemonTCGCardLoader
 from pokemon_tcg_card_view import PokemonTCGCardView  # Import the Card class
 
 def create_drop_image(cards: list[AbstractCardView], spacing: int = 20, padding: int = 20) -> io.BytesIO:
@@ -39,11 +39,12 @@ def create_drop_image(cards: list[AbstractCardView], spacing: int = 20, padding:
 
 def main():
     # Create a list of Card objects
-    cards = [PokemonCardView(Pokemon()) for _ in range(3)]
-    cards = [PokemonTCGCardView(PokemonTCGCard()) for _ in range(3)]
+    # cards = [PokemonCardView(Pokemon()) for _ in range(3)]
+    cards = [PokemonTCGCardLoader.random().get_view() for _ in range(3)]
 
     # Generate the drop image
     image = create_drop_image(cards)
+    print(f"Generated card ids: {cards[0].card.id} , {cards[1].card.id}, {cards[2].card.id}")
 
     # Save the image to a file
     with open('drop_image.png', 'wb') as f:

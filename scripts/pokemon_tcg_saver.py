@@ -148,8 +148,9 @@ def load_pokemon_tcg_card_data(pokemon_tcg_card_id):
     card_file = os.path.join(card_file, file_name)
 
     with open(card_file, 'r') as file:
-        pokemon_data = json.load(file)
-        return pokemon_data
+        card_data = json.load(file)
+        from pokemon_tcg_card import PokemonTCGCard
+        return PokemonTCGCard.model_validate(card_data)
 
     return None
 
