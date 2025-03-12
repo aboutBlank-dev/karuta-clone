@@ -1,13 +1,13 @@
-from sqlalchemy import Column, Integer, String
-from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy.future import select
-from database.models.base import Base
+from sqlalchemy import Column, Integer
 
-class User(Base):
+from database.models.base_model import Base
+
+class UserModel(Base):
     __tablename__ = "users"
 
     id = Column(Integer, primary_key=True, index=True)
-    discord_id = Column(Integer, nullable=False, unique=True)
+    discord_user_id = Column(Integer, nullable=False, unique=True)
+
 
 # CRUD functions
 # async def create_user(db: AsyncSession, name: str):
@@ -20,3 +20,4 @@ class User(Base):
 # async def get_user_by_name(db: AsyncSession, name: str):
 #     result = await db.execute(select(User).filter(User.name == name))
 #     return result.scalars().first()
+

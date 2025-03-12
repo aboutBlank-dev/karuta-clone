@@ -1,9 +1,7 @@
 import discord
-from abstract_card_view import AbstractCardView
+from discord_views.card_drop_button_view import CardDropButtonView
 from drops.card_drop_event import CardDropEvent
 from drops.card_drop_manager import CardDropManager
-
-from views.card_drop_button_view import CardDropButtonView
 
 class CardDropView(discord.ui.View):
     def __init__(self, drop_event: CardDropEvent):
@@ -46,7 +44,3 @@ class CardDropView(discord.ui.View):
 
         await self.discord_drop_message.edit(embed=expired_embed, view=None)
         return await super().on_timeout()
-
-
-        
-    

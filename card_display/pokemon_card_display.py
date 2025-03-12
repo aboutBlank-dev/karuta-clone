@@ -1,15 +1,15 @@
 from PIL import ImageDraw, Image, ImageFont
-from abstract_card_view import AbstractCardView
-from pokemon import Pokemon
+from card_display.abstract_card_display import AbstractCardDisplay
+from schemas.pokemon_schema import PokemonSchema
 
-class PokemonCardView(AbstractCardView):
+class PokemonCardDisplay(AbstractCardDisplay):
     CARD_WIDTH = 300
     CARD_HEIGHT = 400
 
     SPRITE_WIDTH = 200
     SPRITE_HEIGHT = 200
 
-    def __init__(self, pokemon: Pokemon):
+    def __init__(self, pokemon: PokemonSchema):
         self.pokemon = pokemon
 
     def get_display_name(self):

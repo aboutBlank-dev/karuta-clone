@@ -1,12 +1,12 @@
 from PIL import Image, ImageDraw
 import io
-from abstract_card_view import AbstractCardView
-from pokemon_card_view import PokemonCardView
-from pokemon import Pokemon
-from pokemon_tcg_card import PokemonTCGCard, PokemonTCGCardLoader
-from pokemon_tcg_card_view import PokemonTCGCardView  # Import the Card class
+from card_display.abstract_card_display import AbstractCardDisplay
+from card_display.pokemon_card_display import PokemonCardDisplay
+from schemas.pokemon_schema import PokemonSchema
+from schemas.pokemon_card_schema import PokemonCardSchema, PokemonTCGCardLoader
+from card_display.pokemon_tcg_card_display import PokemonTCGCardDisplay  # Import the Card class
 
-def create_drop_image(cards: list[AbstractCardView], spacing: int = 20, padding: int = 20) -> io.BytesIO:
+def create_drop_image(cards: list[AbstractCardDisplay], spacing: int = 20, padding: int = 20) -> io.BytesIO:
     # Calculate combined width and height including spacing and padding
     # We generate first card ahead of time since we need to update the width/height (which we get from the loaded image)
     first_card = cards[0]

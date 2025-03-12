@@ -1,4 +1,4 @@
-from database.models.base import Base
+from database.models.base_model import Base
 from database.session import engine
 from database import user, card, user_card  # Import all models
 

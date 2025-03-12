@@ -2,7 +2,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 import asyncio
 from sqlalchemy.future import select
 
-from database.models.user import User
+from database.models.user_model import User
 from database.session import get_db
 from database.session import engine
 

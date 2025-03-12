@@ -3,7 +3,7 @@ from pydantic import BaseModel
 from scripts.pokemon_tcg_saver import load_pokemon_tcg_card_data, load_pokemon_tcg_card_image
 from utils.file_utils import get_random_subdirectory
 
-class PokemonTCGCard(BaseModel):
+class PokemonCardSchema(BaseModel):
     id: str
     name: str
     number: str
@@ -13,15 +13,15 @@ class PokemonTCGCard(BaseModel):
     flavor_text: str | None
 
     def get_view(self):
-        from pokemon_tcg_card_view import PokemonTCGCardView
-        return PokemonTCGCardView(self)
+        from card_display.pokemon_tcg_card_display import PokemonTCGCardDisplay
+        return PokemonTCGCardDisplay(self)
 
 class PokemonTCGCardLoader:
-    def load_id(id) -> PokemonTCGCard:
+    def load_id(id) -> PokemonCardSchema:
         return load_pokemon_tcg_card_data(id)
     
-    def random() -> PokemonTCGCard:
-        PROJECT_ROOT = Path(__file__).resolve().parent
+    def random() -> PokemonCardSchema:
+        PROJECT_ROOT = Path(__file__).resolve().parent.parent
         data_dir = PROJECT_ROOT / "pokemon_tcg_data"
         id = get_random_subdirectory(data_dir)
         return load_pokemon_tcg_card_data(id)

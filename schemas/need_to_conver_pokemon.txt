@@ -1,0 +1,1 @@
+still need to convert pokemon_schema to be actually use pydantic BaseModel

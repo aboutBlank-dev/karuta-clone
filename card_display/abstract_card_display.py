@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 
-class AbstractCardView(ABC):
+class AbstractCardDisplay(ABC):
     CARD_WIDTH: int
     CARD_HEIGHT: int
 

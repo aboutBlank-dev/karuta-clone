@@ -149,8 +149,8 @@ def load_pokemon_tcg_card_data(pokemon_tcg_card_id):
 
     with open(card_file, 'r') as file:
         card_data = json.load(file)
-        from pokemon_tcg_card import PokemonTCGCard
-        return PokemonTCGCard.model_validate(card_data)
+        from schemas.pokemon_card_schema import PokemonCardSchema
+        return PokemonCardSchema.model_validate(card_data)
 
     return None
 

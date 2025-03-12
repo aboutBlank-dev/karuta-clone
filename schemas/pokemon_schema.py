@@ -1,11 +1,11 @@
 import random
 
-from pokemon_saver import load_pokemon_data
+from scripts.pokemon_saver import load_pokemon_data
 
 MAX_POKEMON_ID = 1025
 SHINY_CHANCE = 1/4096
 
-class Pokemon:
+class PokemonSchema:
     def __init__(self, id=None):
         if id is None:
             id = random.randint(1, MAX_POKEMON_ID)

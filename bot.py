@@ -3,14 +3,13 @@ from dotenv import load_dotenv
 import discord
 import logging
 from drops.card_drop_manager import CardDropManager
-from pokemon_card_view import PokemonCardView
-from image_generator import create_drop_image
+from card_display.pokemon_card_display import PokemonCardDisplay
+from card_display.image_generator import create_drop_image
 from discord.ext import commands
 
-from pokemon import Pokemon
-from pokemon_tcg_card import PokemonTCGCard, PokemonTCGCardLoader
-from pokemon_tcg_card_view import PokemonTCGCardView
-from views.card_drop_view import CardDropView
+from schemas.pokemon_schema import PokemonSchema
+from schemas.pokemon_card_schema import PokemonCardSchema, PokemonTCGCardLoader
+from card_display.pokemon_tcg_card_display import PokemonTCGCardDisplay
 
 # Load environment variables
 load_dotenv()

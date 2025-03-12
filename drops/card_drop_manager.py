@@ -1,6 +1,6 @@
 import threading
 from drops.card_drop_event import CardDropEvent
-from pokemon_tcg_card import PokemonTCGCardLoader
+from schemas.pokemon_card_schema import PokemonTCGCardLoader
 
 
 class CardDropManager:

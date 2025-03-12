@@ -1,10 +1,8 @@
 import uuid
 from datetime import datetime
-
 import pytz
-
-from image_generator import create_drop_image
-from pokemon_tcg_card import PokemonTCGCard
+from card_display.image_generator import create_drop_image
+from schemas.pokemon_card_schema import PokemonCardSchema
 
 class CardDropEvent:
     DURATION_SECONDS = 60
@@ -13,7 +11,7 @@ class CardDropEvent:
     """
     Represents a single drop event.
     """
-    def __init__(self, cards: list[PokemonTCGCard], discord_message):
+    def __init__(self, cards: list[PokemonCardSchema], discord_message):
         self.id = str(uuid.uuid4())
         self.owner_discord_id = discord_message.author.id
         self.discord_channel = discord_message.channel
@@ -55,7 +53,7 @@ class CardDropEvent:
             return True, None
  
     def _get_discord_view(self):
-        from views.card_drop_view import CardDropView
+        from discord_views.card_drop_view import CardDropView
         return CardDropView(self)
         
     def _create_drop_image(self):

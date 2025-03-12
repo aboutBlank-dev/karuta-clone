@@ -1,13 +1,13 @@
-from abstract_card_view import AbstractCardView
+from card_display.abstract_card_display import AbstractCardDisplay
 
-from pokemon_tcg_card import PokemonTCGCard
+from schemas.pokemon_card_schema import PokemonCardSchema
 from scripts.pokemon_tcg_saver import load_pokemon_tcg_card_image
 
-class PokemonTCGCardView(AbstractCardView):
+class PokemonTCGCardDisplay(AbstractCardDisplay):
     CARD_WIDTH = 240
     CARD_HEIGHT = 330
 
-    def __init__(self, card: PokemonTCGCard):
+    def __init__(self, card: PokemonCardSchema):
         self.card = card
     
     def create_image(self):
