@@ -3,13 +3,7 @@ from dotenv import load_dotenv
 import discord
 import logging
 from drops.card_drop_event_handler import CardDropEventHandler
-from card_display.pokemon_card_display import PokemonCardDisplay
-from card_display.image_generator import create_drop_image
-from discord.ext import commands
 
-from schemas.pokemon_schema import PokemonSchema
-from schemas.pokemon_card_schema import PokemonCardSchema, PokemonTCGCardLoader
-from card_display.pokemon_tcg_card_display import PokemonTCGCardDisplay
 from user_manager import UserManager
 
 # Load environment variables
@@ -37,6 +31,13 @@ async def on_message(message):
         await UserManager.get_or_create(message.author.id)
         drop_event = await CardDropEventHandler.create_drop_event_random(3, message)
         await drop_event.start()
+    
+    if message.content == "!inv":
+        all_user_cards = await UserManager.get_all_user_cards(message.author.id)
+
+        card_ids = "\n".join(str(card.pokemon_tcg_card_id) for card in all_user_cards)
+        # Send the message with all the card ids
+        await message.channel.send(f"Your cards:\n{card_ids}")
 
 
 # Log Handler

@@ -9,7 +9,8 @@ from schemas.pokemon_card_schema import PokemonCardSchema, PokemonTCGCardLoader
 
 
 class CardDropEventHandler:
-    async def create_drop_event_random(card_amount: int, discord_message):
+    @staticmethod
+    async def create_drop_event_random(card_amount: int, discord_message) -> CardDropEvent:
         random_cards = [PokemonTCGCardLoader.random() for _ in range(card_amount)]
         event = CardDropEvent(random_cards, discord_message)
 
@@ -24,6 +25,7 @@ class CardDropEventHandler:
 
         return event
 
+    @staticmethod
     async def claim_card_index(drop_event: CardDropEvent, discord_user_id: int, card_index: int) -> PokemonCardSchema:
         can_claim, error_message = CardDropEventHandler.can_user_claim_card(drop_event, discord_user_id, card_index)
 
@@ -45,6 +47,7 @@ class CardDropEventHandler:
 
         return claimed_card
     
+    @staticmethod
     def can_user_claim_card(drop_event: CardDropEvent, user_discord_id: int, card_index: int) -> tuple[bool, str]:
         if drop_event.claimed_cards[card_index] is not None:
             return False, "This card has already been claimed."
