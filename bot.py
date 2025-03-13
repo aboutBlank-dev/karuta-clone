@@ -2,7 +2,7 @@ import os
 from dotenv import load_dotenv
 import discord
 import logging
-from drops.card_drop_manager import CardDropManager
+from drops.card_drop_event_handler import CardDropEventHandler
 from card_display.pokemon_card_display import PokemonCardDisplay
 from card_display.image_generator import create_drop_image
 from discord.ext import commands
@@ -10,6 +10,7 @@ from discord.ext import commands
 from schemas.pokemon_schema import PokemonSchema
 from schemas.pokemon_card_schema import PokemonCardSchema, PokemonTCGCardLoader
 from card_display.pokemon_tcg_card_display import PokemonTCGCardDisplay
+from user_manager import UserManager
 
 # Load environment variables
 load_dotenv()
@@ -21,7 +22,6 @@ intents.message_content = True
 intents.reactions = True
 
 client = discord.Client(intents=intents)
-card_drop_manager = CardDropManager()
 
 @client.event
 async def on_ready():
@@ -34,7 +34,8 @@ async def on_message(message):
         return
     
     if message.content == '!drop':
-        drop_event = card_drop_manager.create_drop_event_random(3, message)
+        await UserManager.get_or_create(message.author.id)
+        drop_event = await CardDropEventHandler.create_drop_event_random(3, message)
         await drop_event.start()
 
 

@@ -1,4 +1,4 @@
-from sqlalchemy import Column, DateTime, Integer, func
+from sqlalchemy import BigInteger, Column, DateTime, func
 
 from database.models.base import Base
 
@@ -7,6 +7,5 @@ class UserModel(Base):
 
     created_at = Column(DateTime, default=func.now())
 
-    id = Column(Integer, primary_key=True, index=True)
-    discord_user_id = Column(Integer, nullable=False, unique=True)
+    discord_user_id = Column(BigInteger, primary_key=True) ## this is the users discord id
 

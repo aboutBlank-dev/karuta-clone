@@ -1,7 +1,6 @@
 import discord
 from discord_views.card_drop_button_view import CardDropButtonView
 from drops.card_drop_event import CardDropEvent
-from drops.card_drop_manager import CardDropManager
 
 class CardDropView(discord.ui.View):
     def __init__(self, drop_event: CardDropEvent):
@@ -23,9 +22,6 @@ class CardDropView(discord.ui.View):
         self.discord_drop_message = await self.discord_channel.send(embed=embed, file=file, view=self)
     
     async def on_timeout(self):
-        card_drop_manager = CardDropManager()
-        card_drop_manager.on_event_timed_out(self.drop_event.id)
-
         file_name = f"drop_{self.drop_event.id}.png"
         expired_embed = discord.Embed(title="🎴 Drop has expired !", color=discord.Color.light_grey())
         expired_embed.set_image(url=f"attachment://{file_name}")

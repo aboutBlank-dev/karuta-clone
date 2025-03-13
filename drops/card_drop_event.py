@@ -25,33 +25,6 @@ class CardDropEvent:
         view = self._get_discord_view()
         return await view.start()
     
-    def claim_card_index(self, user_id: int, card_index: int):
-        self.claimed_cards[card_index] = user_id
-        claimed_card = self.all_cards[card_index]
-        return claimed_card
-    
-    def can_user_claim_card(self, user_id: int, card_index: int) -> tuple[bool, str]:
-        if self.claimed_cards[card_index] is not None:
-            return False, "This card has already been claimed."
-
-        # Check if user has already claimed a card
-        if user_id in self.claimed_cards:
-            return False, "You have already claimed a card from this drop."
-
-        # Owner can always interact (provided they haven't claimed one already)
-        if user_id == self.owner_discord_id:
-            return True, None
-        
-        # Check if Non-Owner time brace has expired
-        timezone = pytz.timezone('UTC')  # Use UTC for consistency
-        current_time = datetime.now(timezone)
-        time_difference = current_time - self.created_at
-        owner_only = time_difference.total_seconds() <= self.OWNER_ONLY_DURATION_SECONDS
-        if owner_only:
-            return False, f"You must wait at least {self.OWNER_ONLY_DURATION_SECONDS} seconds to claim someone else's drop. Time left: {time_difference.total_seconds()} seconds"
-        else:
-            return True, None
- 
     def _get_discord_view(self):
         from discord_views.card_drop_view import CardDropView
         return CardDropView(self)
