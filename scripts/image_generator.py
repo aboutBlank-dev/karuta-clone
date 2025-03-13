@@ -79,9 +79,7 @@ def torn_edges(image, card_id, output_path, pattern_index, torn_intensity):
         0.0 -> minimal grey coverage (nearly no damage).
         1.0 -> maximum grey coverage (heavily damaged).
     """
-
-    if pattern_index < 0 or pattern_index > 499:
-        raise Exception("pattern_index must be between 0-499")
+    pattern_index = pattern_index % 500
 
     height, width = image.shape[:2]
 
