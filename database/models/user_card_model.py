@@ -1,11 +1,17 @@
-from sqlalchemy import Column, Integer, ForeignKey, String
-from database.models.base_model import Base
+from sqlalchemy import Column, DateTime, Integer, ForeignKey, String, func
+from database.models.base import Base
+from utils.id_utils import to_base36
+from sqlalchemy.ext.asyncio import AsyncSession
+
 
 class UserCardModel(Base):
     __tablename__ = "user_cards"
 
-    id = Column(String, primary_key=True, unique=True)
-    collection_index = Column(Integer, autoincrement=True, unique=True)
+    created_at = Column(DateTime, default=func.now())
 
-    pokemon_tcg_card_id = Column(String)
+    id = Column(Integer, primary_key=True)
+    pokemon_tcg_card_id = Column(String, nullable=False)
+
+    # Foreign Keys
     owner_id = Column(Integer, ForeignKey("users.id"))
+    drop_event_id = Column(String, ForeignKey("card_drop_events.id"))

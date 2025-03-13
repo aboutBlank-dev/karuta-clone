@@ -1,22 +1,26 @@
-import logging
-from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
+from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
 from sqlalchemy.orm import sessionmaker
-from dotenv import load_dotenv
 import os
+from dotenv import load_dotenv
 
+# Load environment variables
 load_dotenv()
-database_url = os.getenv("DATABASE_URL")
+DATABASE_URL = os.getenv("DATABASE_URL")
 
-# Set up logging to only show errors
-logging.basicConfig()
-logging.getLogger("sqlalchemy.engine").setLevel(logging.ERROR)
+if not DATABASE_URL:
+    raise ValueError("DATABASE_URL not set in .env file")
 
-# Create async database engine with echo disabled
-engine = create_async_engine(database_url, echo=False)
+# Create an async engine
+engine = create_async_engine(DATABASE_URL, echo=True)
 
-# Create session factory
-SessionLocal = sessionmaker(bind=engine, class_=AsyncSession, expire_on_commit=False)
+# Async session maker
+AsyncSessionLocal = async_sessionmaker(
+    bind=engine,
+    expire_on_commit=False,
+    class_=AsyncSession
+)
 
-async def get_db():
-    async with SessionLocal() as session:
+# Dependency to get an async session
+async def get_session() -> AsyncSession:
+    async with AsyncSessionLocal() as session:
         yield session
