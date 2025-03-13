@@ -17,9 +17,11 @@ class PokemonCardSchema(BaseModel):
         return PokemonTCGCardDisplay(self)
 
 class PokemonTCGCardLoader:
+    @staticmethod
     def load_id(id) -> PokemonCardSchema:
         return load_pokemon_tcg_card_data(id)
     
+    @staticmethod
     def random() -> PokemonCardSchema:
         PROJECT_ROOT = Path(__file__).resolve().parent.parent
         data_dir = PROJECT_ROOT / "pokemon_tcg_data"
