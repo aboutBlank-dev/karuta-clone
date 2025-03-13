@@ -161,3 +161,17 @@ def load_pokemon_tcg_card_image(pokemon_tcg_card_id):
     card_file = os.path.join(card_file, file_name)
 
     return Image.open(card_file).convert('RGBA')
+
+def load_pokemon_tcg_set_data(pokemon_tcg_set_id):
+    file_name = sanitize_filename(f'{pokemon_tcg_set_id}.json')
+
+    set_file = os.path.join(data_dir, "sets")
+    set_file = os.path.join(set_file, file_name)
+
+    with open(set_file, 'r') as file:
+        set_data = json.load(file)
+        from schemas.pokemon_card_set_schema import PokemonCardSetSchema
+        return PokemonCardSetSchema.model_validate(set_data)
+
+    return None
+

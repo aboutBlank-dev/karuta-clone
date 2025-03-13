@@ -7,6 +7,10 @@ class AbstractCardDisplay(ABC):
     @abstractmethod
     def create_image(self):
         pass
+
+    @abstractmethod
+    def get_image_as_bytes(self):
+        pass
     
     @abstractmethod
     def get_display_name(self):

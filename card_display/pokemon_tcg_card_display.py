@@ -1,3 +1,4 @@
+import io
 from card_display.abstract_card_display import AbstractCardDisplay
 
 from schemas.pokemon_card_schema import PokemonCardSchema
@@ -15,6 +16,15 @@ class PokemonTCGCardDisplay(AbstractCardDisplay):
         image = image.resize((self.CARD_WIDTH, self.CARD_HEIGHT))
         return image
     
+    def get_image_as_bytes(self):
+        image = self.create_image()
+        byte_io = io.BytesIO()
+        image.save(byte_io, 'PNG')  # Save as PNG with transparency
+        byte_io.seek(0)
+
+        return byte_io
+
+
     def get_display_name(self):
         return self.card.name
 

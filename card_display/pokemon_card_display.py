@@ -2,7 +2,7 @@ from PIL import ImageDraw, Image, ImageFont
 from card_display.abstract_card_display import AbstractCardDisplay
 from schemas.pokemon_schema import PokemonSchema
 
-class PokemonCardDisplay(AbstractCardDisplay):
+class PokemonCardDisplay(AbstractCardDisplay): 
     CARD_WIDTH = 300
     CARD_HEIGHT = 400
 

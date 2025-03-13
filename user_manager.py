@@ -4,6 +4,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from database.models.user_card_model import UserCardModel
 from database.models.user_model import UserModel
 from database.session import get_session
+from utils.id_utils import from_base36
 
 class UserManager:
 
@@ -25,7 +26,7 @@ class UserManager:
             return new_user
 
     @staticmethod
-    async def get_all_user_cards(discord_user_id: int):
+    async def get_all_user_cards(discord_user_id: int) -> list[UserCardModel]:
         """
         Returns all cards for the given user.
         """
@@ -62,4 +63,16 @@ class UserManager:
                 return user_cards, user_cards[-1].id  # Return the cards along with the last card's ID for pagination
 
             return [], None  # No cards found, return empty list and None for the cursor
+
+    @staticmethod
+    async def get_user_card(base_36_id: str) -> UserCardModel:
+        """
+        Returns all cards for the given user.
+        """
+        real_card_id = from_base36(base_36_id)
+
+        async with get_session() as session:
+            card = await session.get(UserCardModel, real_card_id)
+            return card
+
     
