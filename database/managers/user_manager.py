@@ -75,4 +75,13 @@ class UserManager:
             card = await session.get(UserCardModel, real_card_id)
             return card
 
+class UserNotExistError(Exception):
+    def __init__(self, message, *args):
+        super().__init__(message, *args)
+        self.message = message
+
+    def __str__(self):
+        # You can customize the string representation of the error
+        return f"User Not Exist: {self.message}"
+
     

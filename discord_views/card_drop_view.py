@@ -2,6 +2,8 @@ import discord
 from drops.card_drop_event import CardDropEvent
 from drops.card_drop_event import CardDropEvent
 from drops.card_drop_event_handler import CardDropEventHandler
+from utils.card_utils import CardUtil
+from utils.id_utils import to_base36
 
 REACTION_EMOJIS = ['1️⃣', '2️⃣', '3️⃣', '4️⃣', '5️⃣', '6️⃣', '7️⃣', '8️⃣', '9️⃣', '🔟']
 
@@ -66,8 +68,8 @@ class CardDropButtonView(discord.ui.Button):
             return
 
         try:
-            claimed_card = await CardDropEventHandler.claim_card_index(self.drop_event, interaction.user.id, self.card_index)
-            await interaction.response.send_message(f"{interaction.user.mention} claimed **{claimed_card.name}** from Drop `{self.drop_event.id}`!")
+            tcg_card, user_card = await CardDropEventHandler.claim_card_at_index(self.drop_event, interaction.user.id, self.card_index)
+            await interaction.response.send_message(f"{interaction.user.mention} claimed **{tcg_card.name}**. Condition: `{CardUtil.get_float_as_condition(user_card.float_value)}` ID: `{to_base36(user_card.id)}`")
         except Exception as e:
             print(e)
             await interaction.response.send_message(f"There was an error claiming your card. Try again.", ephemeral=True)

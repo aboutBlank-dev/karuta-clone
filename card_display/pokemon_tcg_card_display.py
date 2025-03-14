@@ -1,7 +1,7 @@
-import io
 from card_display.abstract_card_display import AbstractCardDisplay
-
+from PIL import Image
 from schemas.pokemon_card_schema import PokemonCardSchema
+from scripts.image_generator import apply_pattern_damage, generate_seed
 from scripts.pokemon_tcg_saver import load_pokemon_tcg_card_image
 
 class PokemonTCGCardDisplay(AbstractCardDisplay):
@@ -12,18 +12,21 @@ class PokemonTCGCardDisplay(AbstractCardDisplay):
         self.card = card
     
     def create_image(self):
-        image = load_pokemon_tcg_card_image(self.card.id)
-        image = image.resize((self.CARD_WIDTH, self.CARD_HEIGHT))
-        return image
+        try:
+            image = load_pokemon_tcg_card_image(self.card.id)
+            image = image.resize((self.CARD_WIDTH, self.CARD_HEIGHT))
+            return image
+        except Exception as e:
+            print(e)
+            return Image.new("RGBA", (self.CARD_WIDTH, self.CARD_HEIGHT), (255, 255, 255))
+
     
-    def get_image_as_bytes(self):
+    def create_pattern_image(self, pattern_number, float_value):
         image = self.create_image()
-        byte_io = io.BytesIO()
-        image.save(byte_io, 'PNG')  # Save as PNG with transparency
-        byte_io.seek(0)
 
-        return byte_io
-
+        seed = generate_seed(pattern_number=pattern_number, card_id=self.card.id)
+        image = apply_pattern_damage(image, seed, float_value)
+        return image
 
     def get_display_name(self):
         return self.card.name

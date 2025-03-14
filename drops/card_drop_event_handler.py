@@ -1,11 +1,14 @@
 from datetime import datetime
+import typing
 import pytz
+from database.managers.user_card_manager import UserCardManager
 from database.models.card_drop_event_model import CardDropEventModel
 from database.models.user_card_model import UserCardModel
 from database.models.user_model import UserModel
 from database.session import get_session
 from drops.card_drop_event import CardDropEvent
 from schemas.pokemon_card_schema import PokemonCardSchema, PokemonTCGCardLoader
+from database.managers.user_manager import UserNotExistError
 
 
 class CardDropEventHandler:
@@ -26,26 +29,17 @@ class CardDropEventHandler:
         return event
 
     @staticmethod
-    async def claim_card_index(drop_event: CardDropEvent, discord_user_id: int, card_index: int) -> PokemonCardSchema:
+    async def claim_card_at_index(drop_event: CardDropEvent, discord_user_id: int, card_index: int) -> typing.Tuple[PokemonCardSchema, UserCardModel]:
         can_claim, error_message = CardDropEventHandler.can_user_claim_card(drop_event, discord_user_id, card_index)
 
         if not can_claim:
             raise InvalidClaimError(error_message)
 
         drop_event.claimed_cards[card_index] = discord_user_id
-        claimed_card = drop_event.all_cards[card_index]
+        claimed_tcg_card = drop_event.all_cards[card_index]
 
-        async with get_session() as session:
-            ##get the db user
-            db_user = await session.get(UserModel, discord_user_id)
-            if db_user is None:
-                raise UserNotExistError(f"User with id:{discord_user_id} does not exist.")
-
-            user_card = UserCardModel.new_user_card_claim_event(discord_user_id, claimed_card, drop_event)
-            session.add(user_card)
-            await session.commit()
-
-        return claimed_card
+        claimed_user_card = await UserCardManager.create_new_user_card(discord_user_id, claimed_tcg_card.id, drop_event) 
+        return claimed_tcg_card, claimed_user_card
     
     @staticmethod
     def can_user_claim_card(drop_event: CardDropEvent, user_discord_id: int, card_index: int) -> tuple[bool, str]:
@@ -70,6 +64,7 @@ class CardDropEventHandler:
         else:
             return True, None
 
+
 class InvalidClaimError(Exception):
     def __init__(self, message, *args):
         super().__init__(message, *args)
@@ -78,12 +73,3 @@ class InvalidClaimError(Exception):
     def __str__(self):
         # You can customize the string representation of the error
         return f"Invalid Claim Error: {self.message}"
-
-class UserNotExistError(Exception):
-    def __init__(self, message, *args):
-        super().__init__(message, *args)
-        self.message = message
-
-    def __str__(self):
-        # You can customize the string representation of the error
-        return f"User Not Exist: {self.message}"

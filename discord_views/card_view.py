@@ -16,7 +16,7 @@ class CardView(discord.ui.View):
         self.tcg_card = PokemonTCGCardLoader.load_id(card.pokemon_tcg_card_id)
         self.tcg_set = PokemonCardSetLoader.load_id(self.tcg_card.set)
 
-        self.card_image = self.tcg_card.get_view().get_image_as_bytes()
+        self.card_image = self.tcg_card.get_view().get_pattern_image_as_bytes(card.pattern_number, card.float_value)
 
     async def start(self):
         embed = discord.Embed(title=self.tcg_card.name, description=self.tcg_set.name, color=discord.Color.green())

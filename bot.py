@@ -6,7 +6,7 @@ from discord_views.card_view import CardView
 from discord_views.user_inventory_view import UserInventoryView
 from drops.card_drop_event_handler import CardDropEventHandler
 
-from user_manager import UserManager
+from database.managers.user_manager import UserManager
 
 # Load environment variables
 load_dotenv()

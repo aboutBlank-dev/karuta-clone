@@ -1,8 +1,12 @@
-import argparse
+import sys
 import os
+
+PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+sys.path.append(PROJECT_ROOT)
+
+import argparse
 import json
 from pathlib import Path
-import sys
 import requests
 from io import BytesIO
 from pokemontcgsdk import RestClient
@@ -12,17 +16,14 @@ from PIL import Image
 from dotenv import load_dotenv
 
 # Add the parent directory to sys.path
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from utils.file_utils import sanitize_filename
 
 load_dotenv()
 RestClient.configure(os.getenv("POKEMON_TCG_API_KEY"))
 
-# Get the project root (parent of the current script's directory)
-PROJECT_ROOT = Path(__file__).resolve().parent.parent
-
 # Define the data directory
-data_dir = PROJECT_ROOT / "pokemon_tcg_data"
+data_dir = os.path.join(PROJECT_ROOT, "pokemon_tcg_data")
+print(data_dir)
 
 def save_all_sets(force=False):
     all_sets = TCGSet.all()
@@ -30,12 +31,13 @@ def save_all_sets(force=False):
         save_set_data(set, force)
 
 def save_set_data(set: TCGSet, force=False):
-    sets_folder = os.path.join(data_dir, "sets")
-    if os.path.exists(sets_folder) and not force:
-        print(f"Skipping set with ID {set.id} ({set.name}) as it already exists at {sets_folder}")
+    set_folder = os.path.join(data_dir, set.id)
+
+    if os.path.exists(set_folder) and not force:
+        print(f"Skipping set with ID {set.id} ({set.name}) as it already exists at {set_folder}")
         return
 
-    os.makedirs(sets_folder, exist_ok=True)
+    os.makedirs(set_folder, exist_ok=True)
 
     save_data = {
         "id": set.id,
@@ -46,7 +48,7 @@ def save_set_data(set: TCGSet, force=False):
         "release_date": set.releaseDate
     }
 
-    with open(os.path.join(sets_folder, f'{set.id}.json'), 'w') as file:
+    with open(os.path.join(set_folder, f'{set.id}.json'), 'w') as file:
         json.dump(save_data, file, indent=2)
     
     print(f"Saved {set.name} with ID: {set.id} successfully")
@@ -67,16 +69,12 @@ def save_all_cards(force=False):
         
         page += 1
 
+
 def save_card_data(card: TCGCard, force=False):
-    card_folder = os.path.join(data_dir, sanitize_filename(card.id))
-    if os.path.exists(card_folder) and not force:
-        print(f"Skipping Card with ID {card.id} ({card.name}) as it already exists at {card_folder}")
-        return
-    
-    os.makedirs(card_folder, exist_ok=True)
+    set_folder = os.path.join(data_dir, card.set.id)
 
     # Save the images
-    _save_card_sprites(card, card_folder)
+    _save_card_sprite(card, set_folder, force)
 
     save_data = {
         "id": card.id,
@@ -89,12 +87,18 @@ def save_card_data(card: TCGCard, force=False):
     }
 
     file_name = sanitize_filename(f"{card.id}.json")
-    with open(os.path.join(card_folder, file_name), 'w') as file:
+    file_path = os.path.join(set_folder, file_name) 
+
+    if os.path.exists(file_path) and not force:
+        print(f"Skipping Card with ID {card.id} ({card.name}) as it already exists at {file_path}")
+        return
+
+    with open(file_path, 'w') as file:
         json.dump(save_data, file, indent=2)
     
     print(f"Saved {card.name} with ID: {card.id} successfully")
 
-def _save_card_sprites(card: TCGCard, card_folder: str):
+def _save_card_sprite(card: TCGCard, card_folder: str, force=False):
     image_url = card.images.small
     try:
         # Download the sprite image
@@ -103,9 +107,15 @@ def _save_card_sprites(card: TCGCard, card_folder: str):
 
         # Save the image in the appropriate file
         image_name = sanitize_filename(f'{card.id}.png')
+        image_path = os.path.join(card_folder, image_name)
+
+        if os.path.exists(image_path) and not force:
+            print(f"Skipping Card Image with ID {card.id} ({card.name}) as it already exists at {image_path}")
+            return
+
         try:
             img = Image.open(BytesIO(response.content))
-            img.save(os.path.join(card_folder, image_name))
+            img.save(image_path)
         except Exception as e:
             print(f"Error saving {card.name} for Card ID {card.id} Image Url: {image_url} Error: {e}")
 
@@ -115,39 +125,28 @@ def _save_card_sprites(card: TCGCard, card_folder: str):
 
 def main():
     parser = argparse.ArgumentParser(description="Download Pokémon Card data.")
-    parser.add_argument("id", type=str, help="Pokemon Card ID or 'all' to fetch all Pokémon.")
     parser.add_argument("--force", action="store_true", help="Force the download of the Pokémon Card data.")
-    parser.add_argument("--sets", action="store_true", help="Download all the sets.")
 
     # Create directories for storing data
     # Ensure the main directory exists
     os.makedirs(data_dir, exist_ok=True)
 
     args = parser.parse_args()
-    if args.sets:
-        save_all_sets(args.force)
 
-    if args.id == "all":
-        save_all_cards(args.force)  # Fetch and process all Pokémon
-    else:
-        try:
-            card_id = args.id
-            card = TCGCard.find(card_id)
-            save_card_data(card, args.force)
-        except Exception as e:
-            print("[ERROR] Invalid Pokémon Card ID. Please provide a valid id or 'all'.")
+    save_all_sets(args.force)
+    save_all_cards(args.force)  # Fetch and process all Pokémon
 
 if __name__ == "__main__":
     main()
 
 def load_pokemon_tcg_card_data(pokemon_tcg_card_id):
-    # Load Pokémon data from JSON file
-    folder_name = sanitize_filename(pokemon_tcg_card_id)
+    set_id = pokemon_tcg_card_id.split("-")[0]
     file_name = sanitize_filename(f'{pokemon_tcg_card_id}.json')
-    card_file = os.path.join(data_dir, folder_name)
-    card_file = os.path.join(card_file, file_name)
 
-    with open(card_file, 'r') as file:
+    card_file_path = os.path.join(data_dir, set_id)
+    card_file_path = os.path.join(card_file_path, file_name)
+
+    with open(card_file_path, 'r') as file:
         card_data = json.load(file)
         from schemas.pokemon_card_schema import PokemonCardSchema
         return PokemonCardSchema.model_validate(card_data)
@@ -155,18 +154,21 @@ def load_pokemon_tcg_card_data(pokemon_tcg_card_id):
     return None
 
 def load_pokemon_tcg_card_image(pokemon_tcg_card_id):
-    folder_name = sanitize_filename(pokemon_tcg_card_id)
-    file_name = sanitize_filename(f'{pokemon_tcg_card_id}.png')
-    card_file = os.path.join(data_dir, folder_name)
-    card_file = os.path.join(card_file, file_name)
+    set_id = pokemon_tcg_card_id.split("-")[0]
 
-    return Image.open(card_file).convert('RGBA')
+    set_folder = sanitize_filename(set_id)
+    file_name = sanitize_filename(f'{pokemon_tcg_card_id}.png')
+
+    image_file_path = os.path.join(data_dir, set_folder)
+    image_file_path = os.path.join(image_file_path, file_name)
+
+    return Image.open(image_file_path).convert('RGBA')
 
 def load_pokemon_tcg_set_data(pokemon_tcg_set_id):
     file_name = sanitize_filename(f'{pokemon_tcg_set_id}.json')
 
-    set_file = os.path.join(data_dir, "sets")
-    set_file = os.path.join(set_file, file_name)
+    set_folder = os.path.join(data_dir, pokemon_tcg_set_id)
+    set_file = os.path.join(set_folder, file_name)
 
     with open(set_file, 'r') as file:
         set_data = json.load(file)

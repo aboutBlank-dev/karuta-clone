@@ -5,7 +5,7 @@ from discord_views.card_drop_view import CardDropButtonView
 from drops.card_drop_event import CardDropEvent
 from schemas.pokemon_card_schema import PokemonTCGCardLoader
 from schemas.pokemon_card_set_schema import PokemonCardSetLoader
-from user_manager import UserManager
+from database.managers.user_manager import UserManager
 from utils.id_utils import to_base36
 
 

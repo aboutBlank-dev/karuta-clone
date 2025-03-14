@@ -23,7 +23,9 @@ def apply_pattern_damage(image, seed, float_value, scratch_colour=[255, 194, 133
     """Applies a random portion of scratch.png as damage."""
 
     try:
-        scratch_image = Image.open("scratch.png").convert("RGBA")
+        script_dir = os.path.dirname(os.path.abspath(__file__))  # Get the directory of the current script
+        image_path = os.path.join(script_dir, "scratch.png") 
+        scratch_image = Image.open(image_path).convert("RGBA")
     except FileNotFoundError:
         print("Error: scratch.png not found!")
         return image
@@ -60,6 +62,9 @@ def apply_pattern_damage(image, seed, float_value, scratch_colour=[255, 194, 133
     # Random transformations (flips)
     flip_x = random.choice([True, False])
     flip_y = random.choice([True, False])
+
+    # Clear the seed
+    random.seed()
 
     if flip_x:
         cropped_scratch = cropped_scratch.transpose(Image.FLIP_LEFT_RIGHT)

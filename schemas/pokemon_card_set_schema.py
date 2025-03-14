@@ -1,3 +1,4 @@
+import os
 from pathlib import Path
 from pydantic import BaseModel
 
@@ -19,6 +20,6 @@ class PokemonCardSetLoader:
     
     def random() -> PokemonCardSetSchema:
         PROJECT_ROOT = Path(__file__).resolve().parent.parent
-        data_dir = PROJECT_ROOT / "pokemon_tcg_data" / "sets"
+        data_dir = os.path.join(PROJECT_ROOT, "pokemon_tcg_data")
         id = get_random_subdirectory(data_dir)
         return load_pokemon_tcg_set_data(id)
