@@ -68,7 +68,8 @@ class CardDropButtonView(discord.ui.Button):
         try:
             claimed_card = await CardDropEventHandler.claim_card_index(self.drop_event, interaction.user.id, self.card_index)
             await interaction.response.send_message(f"{interaction.user.mention} claimed **{claimed_card.name}** from Drop `{self.drop_event.id}`!")
-        except Exception:
+        except Exception as e:
+            print(e)
             await interaction.response.send_message(f"There was an error claiming your card. Try again.", ephemeral=True)
             return;
 
