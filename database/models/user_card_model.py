@@ -1,9 +1,7 @@
-from sqlalchemy import BigInteger, Column, DateTime, ForeignKey, String, func
+from sqlalchemy import BigInteger, CheckConstraint, Column, DateTime, Float, ForeignKey, Integer, String, func
 from database.models.base import Base
 from drops.card_drop_event import CardDropEvent
 from schemas.pokemon_card_schema import PokemonCardSchema
-from utils.id_utils import to_base36
-from sqlalchemy.ext.asyncio import AsyncSession
 
 
 class UserCardModel(Base):
