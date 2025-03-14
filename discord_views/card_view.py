@@ -19,7 +19,14 @@ class CardView(discord.ui.View):
         self.card_image = self.tcg_card.get_view().get_pattern_image_as_bytes(card.pattern_number, card.float_value)
 
     async def start(self):
-        embed = discord.Embed(title=self.tcg_card.name, description=self.tcg_set.name, color=discord.Color.green())
+        embed = discord.Embed(title=self.tcg_card.name, color=discord.Color.green())
+
+        formatted_text = ""
+        formatted_text += f"**Set**: `{self.tcg_set.name}`\n"
+        formatted_text += f"**Float Value**: `{self.card.float_value}`\n"
+        formatted_text += f"**Pattern Number**: `{self.card.pattern_number}`\n"
+
+        embed.description = formatted_text;
 
         file_name = f"drop_{to_base36(self.card.id)}.png"
         file = discord.File(self.card_image, file_name)

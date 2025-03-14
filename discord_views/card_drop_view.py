@@ -18,7 +18,7 @@ class CardDropView(discord.ui.View):
             self.add_item(button)
 
     async def start(self):
-        embed = discord.Embed(title="🎴 Cards have appeared!", description="React to claim a card!", color=discord.Color.blue())
+        embed = discord.Embed(title="🎴 Cards have appeared!", description=f"{self.drop_event.discord_author.mention} React to claim a card!", color=discord.Color.blue())
         
         file_name = f"drop_{self.drop_event.id}.png"
         file = discord.File(self.drop_event.drop_image, file_name)

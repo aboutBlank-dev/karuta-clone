@@ -13,6 +13,7 @@ class CardDropEvent:
     """
     def __init__(self, cards: list[PokemonCardSchema], discord_message):
         self.id = str(uuid.uuid4())
+        self.discord_author = discord_message.author
         self.owner_discord_id = discord_message.author.id
         self.discord_channel = discord_message.channel
         self.created_at = discord_message.created_at

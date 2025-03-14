@@ -31,7 +31,7 @@ class UserInventoryView(discord.ui.View):
             tcg_card = PokemonTCGCardLoader.load_id(card.pokemon_tcg_card_id)
             tcg_set = PokemonCardSetLoader.load_id(tcg_card.set)
 
-            formatted_text += f"`{to_base36(card.id)}`: {tcg_card.name} from **{tcg_set.name}**\n"
+            formatted_text += f"`{to_base36(card.id)}`: {tcg_card.name} - **{tcg_set.name}** Float: `{card.float_value}` Pattern: `{card.pattern_number}`\n"
 
         embed = discord.Embed(title="🎴 Here is your Inventory!", description=f"Use the buttons to navigate to the next/previous pages. \n\n {formatted_text}", color=discord.Color.yellow())
 
